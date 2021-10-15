@@ -88,6 +88,8 @@ def ACCOUNT_MANAGE(data_account):
 					os.system('cls||clear')
 					print('Tài khoản đã được giữ lại.\n')
 					return
+				else:
+					os.system('cls||clear')
 		else:
 			os.system('cls||clear')
 			print(f'Tài khoản "{del_account}" không tồn tại !\n')
@@ -95,10 +97,14 @@ def ACCOUNT_MANAGE(data_account):
 
 	#hàm in danh sách các tài khoản có trong hệ thống
 	def PRINT_DATA_ACCOUNT(data_account):
-		print('{:>20} {:>20}'.format('Tài khoản','Mật khẩu','\n'))
-		for i in data_account.items():
-			print('{:>20} {:>20}'.format(*i))
-			print('\n')
+		if (data_account == {}):
+			print('\tHiện tại chưa có tài khoản trong hệ thống !')
+			print('\tMời bạn chọn chức năng đăng ký để tạo tài khoản mới.\n')
+		else:
+			print('{:>20} {:>20}'.format('Tài khoản','Mật khẩu','\n'))
+			for i in data_account.items():
+				print('{:>20} {:>20}'.format(*i))
+				print('\n')
 	while 1:
 		print('\t\t=== MENU QUẢN LÝ TÀI KHOẢN ===')
 		print('\t\t1. Đăng ký')
@@ -111,11 +117,15 @@ def ACCOUNT_MANAGE(data_account):
 			print('=== ĐĂNG KÝ TÀI KHOẢN ===')
 			REGISTER(data_account)
 		elif (lua_chon=='2'):
-			os.system('cls||clear')
-			print('\t=== DANH SÁCH TÀI KHOẢN VÀ MẬT KHẨU HIỆN CÓ ===')
-			PRINT_DATA_ACCOUNT(data_account)
-			print('=== XÓA TÀI KHOẢN ===')
-			DELETE_ACCOUNT(data_account)
+			if (data_account == {}):
+				os.system('cls||clear')
+				print('\n\t\t\t\tDanh sách tài khoản đang trống !\n\t\t\tBạn không thể xóa khi không có tài khoản trong hệ thống\n')
+			else:
+				os.system('cls||clear')
+				print('\t=== DANH SÁCH TÀI KHOẢN VÀ MẬT KHẨU HIỆN CÓ ===')
+				PRINT_DATA_ACCOUNT(data_account)
+				print('=== XÓA TÀI KHOẢN ===')
+				DELETE_ACCOUNT(data_account)
 		elif (lua_chon=='3'):
 			os.system('cls||clear')
 			print('\t=== DANH SÁCH TÀI KHOẢN VÀ MẬT KHẨU ===\n')
@@ -172,7 +182,12 @@ def READ_FILE(danh_sach_san_pham):
 			danh_sach_san_pham.append(j)
 		open_data.close()
 		return
-
+#hàm kiểm tra kho có sản phẩm hay không có
+def KIEM_TRA_TRONG (danh_sach_san_pham):
+		if (danh_sach_san_pham == []):
+			return True
+		else:
+			return False
 #hàm gồm chức năng dành cho người quản lý
 def TINH_NANG_QUAN_LY(danh_sach_san_pham):
 	#ghi dữ liệu vào file
@@ -196,7 +211,7 @@ def TINH_NANG_QUAN_LY(danh_sach_san_pham):
 		while 1:
 			danh_sach_con = list()
 			masp = input('Nhập mã sản phẩm : ')
-			if (KIEM_TRA_TRUNG_LAP(danh_sach_san_pham,masp)):
+			if (KIEM_TRA_TRUNG_LAP(danh_sach_san_pham,masp.upper())):
 				if (masp!='') and (masp.isspace()==False):
 					danh_sach_con.append(masp.upper())
 				else:
@@ -250,7 +265,7 @@ def TINH_NANG_QUAN_LY(danh_sach_san_pham):
 				return
 			else:
 				os.system('cls||clear')
-				print(f'Mã phẩm "{masp}" bị trùng lặp !\n')
+				print(f'Mã sản phẩm "{masp.upper()}" bị trùng lặp !\n')
 				return
 
 	#hàm xóa 1 sản phẩm trong kho
@@ -418,19 +433,35 @@ def TINH_NANG_QUAN_LY(danh_sach_san_pham):
 			print('=== THÊM SẢN PHẨM ===')
 			THEM_SAN_PHAM(danh_sach_san_pham)
 		elif (lua_chon=='2'):
-			THAY_DOI_THONG_TIN(danh_sach_san_pham)
+			if (KIEM_TRA_TRONG (danh_sach_san_pham)):
+				os.system('cls||clear')
+				print('\n\t\t\t\t\tDanh sách sản phẩm đang trống !\n\t\t\tBạn không thể thay đổi thông tin khi không có sản phẩm trong kho')
+			else:
+				THAY_DOI_THONG_TIN(danh_sach_san_pham)
 		elif (lua_chon=='3'):
-			os.system('cls||clear')
-			print('\n\t\t\t======DANH SÁCH SẢN PHẨM ĐANG CÓ TRONG KHO======\n')
-			IN_DANH_SACH(danh_sach_san_pham)
-			print('=== XÓA SẢN PHẨM ===')
-			XOA_SAN_PHAM(danh_sach_san_pham)
+			if (KIEM_TRA_TRONG (danh_sach_san_pham)):
+				os.system('cls||clear')
+				print('\n\t\t\t\tDanh sách sản phẩm đang trống !\n\t\t\tBạn không thể xóa khi không có sản phẩm trong kho')
+			else:
+				os.system('cls||clear')
+				print('\n\t\t\t======DANH SÁCH SẢN PHẨM ĐANG CÓ TRONG KHO======\n')
+				IN_DANH_SACH(danh_sach_san_pham)
+				print('=== XÓA SẢN PHẨM ===')
+				XOA_SAN_PHAM(danh_sach_san_pham)
 		elif (lua_chon=='4'):
-			os.system('cls||clear')
-			TIM_KIEM_SAN_PHAM(danh_sach_san_pham)
+			if (KIEM_TRA_TRONG (danh_sach_san_pham)):
+				os.system('cls||clear')
+				print('\n\t\t\t\t\tDanh sách sản phẩm đang trống !\n\t\t\tBạn không thể tìm kiếm thông tin khi không có sản phẩm trong kho')
+			else:
+				os.system('cls||clear')
+				TIM_KIEM_SAN_PHAM(danh_sach_san_pham)
 		elif (lua_chon=='5'):
-			os.system('cls||clear')
-			SAP_XEP_DANH_SACH(danh_sach_san_pham)
+			if (KIEM_TRA_TRONG (danh_sach_san_pham)):
+				os.system('cls||clear')
+				print('\n\t\t\t\tDanh sách sản phẩm đang trống !\n\t\t\tBạn không thể sắp xếp khi không có sản phẩm trong kho')
+			else:
+				os.system('cls||clear')
+				SAP_XEP_DANH_SACH(danh_sach_san_pham)
 		elif (lua_chon=='6'):
 			os.system('cls||clear')
 			print('\n\t\t\t\t======DANH SÁCH SẢN PHẨM======\n')
@@ -443,10 +474,13 @@ def TINH_NANG_QUAN_LY(danh_sach_san_pham):
 
 #hàm in danh sách các mặt hàng trong kho
 def IN_DANH_SACH(danh_sach_san_pham):
-	print('{:>20} {:>20} {:>20} {:>20} {:>20}'.format('Mã sản phẩm','Tên sản phẩm','Giá nhập (VND)','Giá bán (VND)','Số lượng tồn'),'\n')
-	for i in danh_sach_san_pham:
-		print('{:>20} {:>20} {:>20} {:>20} {:>20}'.format(*i))
-		print('\n')
+	if (danh_sach_san_pham == []):
+		print('\n\t\t\t\tDanh sách sản phẩm trống !\n')
+	else:
+		print('{:>20} {:>20} {:>20} {:>20} {:>20}'.format('Mã sản phẩm','Tên sản phẩm','Giá nhập (VND)','Giá bán (VND)','Số lượng tồn'),'\n')
+		for i in danh_sach_san_pham:
+			print('{:>20} {:>20} {:>20} {:>20} {:>20}'.format(*i))
+			print('\n')
 
 #hàm chứa các chức năng tìm kiếm
 def TIM_KIEM_SAN_PHAM(danh_sach_san_pham):
@@ -611,11 +645,19 @@ while 1:
 		print('\n\t\t\t\t======DANH SÁCH SẢN PHẨM======\n')
 		IN_DANH_SACH(danh_sach_san_pham)
 	elif (lua_chon=='2'):
-		os.system('cls||clear')
-		TIM_KIEM_SAN_PHAM(danh_sach_san_pham)
+		if (KIEM_TRA_TRONG (danh_sach_san_pham)):
+			os.system('cls||clear')
+			print('\n\t\t\t\t\tDanh sách sản phẩm đang trống !\n\t\t\tBạn không thể tìm kiếm thông tin khi không có sản phẩm trong kho')
+		else:
+			os.system('cls||clear')
+			TIM_KIEM_SAN_PHAM(danh_sach_san_pham)
 	elif (lua_chon=='3'):
-		os.system('cls||clear')
-		SAP_XEP_DANH_SACH(danh_sach_san_pham)
+		if (KIEM_TRA_TRONG (danh_sach_san_pham)):
+			os.system('cls||clear')
+			print('\n\t\t\t\tDanh sách sản phẩm đang trống !\n\t\t\tBạn không thể sắp xếp khi không có sản phẩm trong kho')
+		else:
+			os.system('cls||clear')
+			SAP_XEP_DANH_SACH(danh_sach_san_pham)
 	elif (lua_chon=='4'):
 		os.system('cls||clear')
 		ID_quan_ly = input('Nhập mã người quản lý : ')
